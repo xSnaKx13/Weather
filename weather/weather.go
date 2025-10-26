@@ -8,7 +8,7 @@ import (
 	"weather/geo"
 )
 
-func getWeather(geo geo.GeoData, format int) string {
+func GetWeather(geo geo.GeoData, format int) string {
 	baseUrl, err := url.Parse("https://wttr.in/" + geo.City)
 	if err != nil {
 		fmt.Println(err.Error())
