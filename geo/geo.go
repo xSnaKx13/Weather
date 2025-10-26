@@ -1,6 +1,7 @@
 package geo
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"io"
@@ -12,8 +13,16 @@ type LocationData struct {
 	Region string
 }
 
+type PopulationCityResponse struct {
+	Error bool `json:"error"`
+}
+
 func GetMyLocation(city string) (*LocationData, error) {
 	if city != "" {
+		isCity := checkCity(city)
+		if !isCity {
+			return nil, errors.New("invalid city name")
+		}
 		return &LocationData{City: city, Region: "SomeRegion"}, nil
 	}
 	resp, err := http.Get("https://ipapi.co/json/")
@@ -34,4 +43,25 @@ func GetMyLocation(city string) (*LocationData, error) {
 		return nil, errors.New(err.Error())
 	}
 	return &locationData, nil
+}
+
+func checkCity(city string) bool {
+	postBody, _ := json.Marshal(map[string]string{
+		"city": city,
+	})
+	resp, err := http.Post("https://countriesnow.space/api/v0.1/countries/population/cities", "application/json", bytes.NewBuffer(postBody))
+	if err != nil || resp.StatusCode != 200 {
+		return false
+	}
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return false
+	}
+	var populationResp PopulationCityResponse
+	err = json.Unmarshal(body, &populationResp)
+	if err != nil {
+		return false
+	}
+	return !populationResp.Error
 }
