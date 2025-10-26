@@ -10,6 +10,10 @@ import (
 
 func ShowWeather() {
 	userCity := menu.ShowMenu()
+	if userCity == "3" {
+		fmt.Println("Выход из программы.")
+		return
+	}
 
 	city := flag.String("city", userCity, "Specify the city name")
 	format := flag.Int("format", 4, "Specify the weather format (1-4)")
@@ -20,4 +24,6 @@ func ShowWeather() {
 	}
 	setWeather := weather.GetWeather(*location, *format)
 	fmt.Println(setWeather)
+	fmt.Println("Нажмите Enter, чтобы выйти...")
+	fmt.Scanln()
 }

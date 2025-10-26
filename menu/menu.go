@@ -6,16 +6,16 @@ import (
 )
 
 func ShowMenu() string {
-	prompt := promptdata.PromptData(
-		"\n   -- Прогноз погоды --\n",
-		"1. Погода в своем городе\n",
-		"2. Погода в другом городе\n",
-		"3. Выход\n",
-	)
 
 	var userCity string
 	var isWorking bool = true
 	for isWorking {
+		prompt := promptdata.PromptData(
+			"\n   -- Прогноз погоды --\n",
+			"1. Погода в своем городе\n",
+			"2. Погода в другом городе\n",
+			"3. Выход\n",
+		)
 		switch prompt {
 		case "1":
 			userCity = ""
@@ -24,7 +24,7 @@ func ShowMenu() string {
 			userCity = promptdata.PromptData("Введите название города:")
 			isWorking = false
 		case "3":
-			isWorking = false
+			return "3"
 		default:
 			fmt.Println("\nНекорректный выбор.\nПожалуйста, выберите 1, 2 или 3.")
 		}
