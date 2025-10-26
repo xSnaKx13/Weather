@@ -8,16 +8,14 @@ import (
 )
 
 func main() {
-	city := flag.String("city", "", "Город пользователя")
-	//region := flag.String("region", "", "Регион пользователя")
-	format := flag.Int("format", 3, "Формат погоды: 1 - краткий, 2 - средний, 3 - подробный")
+	city := flag.String("city", "", "Specify the city name")
+	format := flag.Int("format", 4, "Specify the weather format (1-4)")
 	flag.Parse()
 
-	data, err := geo.GetMyLocation(*city)
+	location, err := geo.GetMyLocation(*city)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("City: %s, Region: %s\n", data.City, data.Region)
-	weatherInfo := weather.GetWeather(*data, *format)
+	weatherInfo := weather.GetWeather(*location, *format)
 	fmt.Println(weatherInfo)
 }

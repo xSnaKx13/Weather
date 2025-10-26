@@ -8,24 +8,26 @@ import (
 	"weather/geo"
 )
 
-func GetWeather(geo geo.GeoData, format int) string {
-	baseUrl, err := url.Parse("https://wttr.in/" + geo.City)
+func GetWeather(location geo.LocationData, format int) string {
+	baseUrl, err := url.Parse("https://wttr.in/" + location.City)
 	if err != nil {
-		fmt.Println(err.Error())
+		fmt.Println("Ошибка при разборе URL:", err)
+		return ""
 	}
 	params := url.Values{}
-	params.Add("format", string(format))
+	params.Add("format", fmt.Sprint(format))
 	baseUrl.RawQuery = params.Encode()
 
 	resp, err := http.Get(baseUrl.String())
 	if err != nil {
-		fmt.Println(err.Error())
+		fmt.Println("Ошибка при получении данных о погоде:", err)
+		return ""
 	}
-	defer resp.Body.Close()
-
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Println(err.Error())
+		fmt.Println("Ошибка при чтении тела ответа:", err)
+		return ""
 	}
+	defer resp.Body.Close()
 	return string(body)
 }

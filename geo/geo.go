@@ -7,32 +7,31 @@ import (
 	"net/http"
 )
 
-type GeoData struct {
-	City   string `json:"city"`
-	Region string `json:"region"`
+type LocationData struct {
+	City   string
+	Region string
 }
 
-func GetMyLocation(city string) (*GeoData, error) {
+func GetMyLocation(city string) (*LocationData, error) {
 	if city != "" {
-		return &GeoData{City: city, Region: ""}, nil
+		return &LocationData{City: city, Region: "SomeRegion"}, nil
 	}
 	resp, err := http.Get("https://ipapi.co/json/")
 	if err != nil {
-		return nil, err
+		return nil, errors.New(err.Error())
 	}
 	if resp.StatusCode != 200 {
-		return nil, errors.New("NOT200")
+		return nil, errors.New("failed to get location data")
 	}
-	defer resp.Body.Close()
-
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, err
+		return nil, errors.New(err.Error())
 	}
-	var data GeoData
-	err = json.Unmarshal(body, &data)
+	defer resp.Body.Close()
+	var locationData LocationData
+	err = json.Unmarshal(body, &locationData)
 	if err != nil {
-		return nil, err
+		return nil, errors.New(err.Error())
 	}
-	return &data, nil
+	return &locationData, nil
 }
