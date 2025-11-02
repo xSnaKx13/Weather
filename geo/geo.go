@@ -17,11 +17,14 @@ type PopulationCityResponse struct {
 	Error bool `json:"error"`
 }
 
+var ErrInvalidCity = errors.New("invalid city name")
+var ErrNot200 = errors.New("NOT200")
+
 func GetMyLocation(city string) (*LocationData, error) {
 	if city != "" {
 		isCity := checkCity(city)
 		if !isCity {
-			return nil, errors.New("invalid city name")
+			return nil, ErrInvalidCity
 		}
 		return &LocationData{City: city, Region: "SomeRegion"}, nil
 	}
@@ -30,7 +33,7 @@ func GetMyLocation(city string) (*LocationData, error) {
 		return nil, errors.New(err.Error())
 	}
 	if resp.StatusCode != 200 {
-		return nil, errors.New("failed to get location data")
+		return nil, ErrNot200
 	}
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {

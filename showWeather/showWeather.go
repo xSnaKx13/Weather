@@ -22,7 +22,10 @@ func ShowWeather() {
 	if err != nil {
 		panic(err)
 	}
-	setWeather := weather.GetWeather(*location, *format)
+	setWeather, err := weather.GetWeather(*location, *format)
+	if err != nil {
+		fmt.Println(err)
+	}
 	fmt.Println(setWeather)
 	fmt.Println("Нажмите Enter, чтобы выйти...")
 	fmt.Scanln()
